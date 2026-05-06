@@ -1,0 +1,25 @@
+ResNet50 Final Results
+========================================
+QWK: 0.8697
+Accuracy: 0.7844
+ROC-AUC: 0.8848
+
+Confusion Matrix:
+[[345  13   1   1   1]
+ [ 10  44  20   0   0]
+ [  2  32 139  23   4]
+ [  0   1   9  21   8]
+ [  0   9  10  14  26]]
+
+Classification Report:
+               precision    recall  f1-score   support
+
+        No DR     0.9664    0.9557    0.9610       361
+         Mild     0.4444    0.5946    0.5087        74
+     Moderate     0.7765    0.6950    0.7335       200
+       Severe     0.3559    0.5385    0.4286        39
+Proliferative     0.6667    0.4407    0.5306        59
+
+     accuracy                         0.7844       733
+    macro avg     0.6420    0.6449    0.6325       733
+ weighted avg     0.8053    0.7844    0.7903       733

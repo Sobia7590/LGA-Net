@@ -1,0 +1,25 @@
+EfficientNet-B4 Final Results
+========================================
+QWK: 0.8509
+Accuracy: 0.7831
+ROC-AUC: 0.8747
+
+Confusion Matrix:
+[[352   7   1   0   1]
+ [ 13  48  12   1   0]
+ [  7  25 131  23  14]
+ [  0   1  12  14  12]
+ [  3   4  15   8  29]]
+
+Classification Report:
+               precision    recall  f1-score   support
+
+        No DR     0.9387    0.9751    0.9565       361
+         Mild     0.5647    0.6486    0.6038        74
+     Moderate     0.7661    0.6550    0.7062       200
+       Severe     0.3043    0.3590    0.3294        39
+Proliferative     0.5179    0.4915    0.5043        59
+
+     accuracy                         0.7831       733
+    macro avg     0.6183    0.6258    0.6201       733
+ weighted avg     0.7862    0.7831    0.7828       733

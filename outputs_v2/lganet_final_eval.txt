@@ -1,0 +1,26 @@
+LGA-Net Final Validation Results
+==================================================
+Checkpoint: C:\Users\Sobia Khan\Downloads\LGA_NET\outputs_v2\lganet_stage2_best_stage2_aptos_full_finetune.pth
+QWK: 0.9033
+Accuracy: 0.8186
+ROC-AUC: 0.8592
+
+Confusion Matrix:
+[[348  10   3   0   0]
+ [  2  40  32   0   0]
+ [  0  10 165  18   7]
+ [  0   0  15  15   9]
+ [  0   3  15   9  32]]
+
+Classification Report:
+               precision    recall  f1-score   support
+
+        No DR     0.9943    0.9640    0.9789       361
+         Mild     0.6349    0.5405    0.5839        74
+     Moderate     0.7174    0.8250    0.7674       200
+       Severe     0.3571    0.3846    0.3704        39
+Proliferative     0.6667    0.5424    0.5981        59
+
+     accuracy                         0.8186       733
+    macro avg     0.6741    0.6513    0.6598       733
+ weighted avg     0.8222    0.8186    0.8183       733

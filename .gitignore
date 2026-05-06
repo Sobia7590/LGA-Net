@@ -1,0 +1,13 @@
+train_images/ 
+*.pth 
+*.7z 
+__pycache__/ 
+.ipynb_checkpoints/ 
+IDRID_DATASET/ 
+aptos2019-blindness-detection/ 
+node_modules/ 
+package-lock.json 
+generate_paper.js 
+package.json 
+*.docx 
+*.pdf 
