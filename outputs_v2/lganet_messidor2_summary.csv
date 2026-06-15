@@ -1,2 +1,0 @@
-dataset,n_samples,qwk,accuracy,auc_ovr,auc_No_DR,auc_Mild,auc_Moderate,auc_Severe,auc_Proliferative
-Messidor-2,1744,0.5608,0.6032,0.7126,0.7507,0.5573,0.746,0.6102,0.8986

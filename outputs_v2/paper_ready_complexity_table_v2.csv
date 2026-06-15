@@ -1,6 +1,0 @@
-Model,Total Params (M),Avg Image Inference Time (ms),Best QWK,Accuracy,ROC-AUC
-LGA-Net,48.38,13.12,0.9033,0.8186,0.8592
-Swin-Tiny,27.52,14.32,0.8933,0.8131,0.9046
-ResNet50,23.52,13.7,0.8697,0.7844,0.8848
-EfficientNet-B4,17.56,13.54,0.8509,0.7831,0.8747
-MobileNetV2,2.23,13.43,0.8264,0.7449,0.8624
