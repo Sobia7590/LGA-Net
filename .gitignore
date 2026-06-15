@@ -1,13 +1,7 @@
-train_images/ 
+# Model checkpoints 
+outputs_v2/ 
 *.pth 
-*.7z 
+lganet-frontend/node_modules/ 
 __pycache__/ 
 .ipynb_checkpoints/ 
-IDRID_DATASET/ 
-aptos2019-blindness-detection/ 
-node_modules/ 
-package-lock.json 
-generate_paper.js 
-package.json 
-*.docx 
-*.pdf 
+*.pyc 
