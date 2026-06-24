@@ -5,8 +5,7 @@
 
 ## Overview
 
-LGA-Net fuses **EfficientNet-B4** (local lesion features) with **Swin-Tiny** (global context) through a **Lesion-Guided Attention Gate (LGAG)** pre-trained with pixel-level lesion annotations from the IDRiD dataset — the first hybrid DR grading architecture to use pixel-level spatial supervision in the fusion mechanism.
-
+LGA-Net fuses EfficientNet-B4 (local lesion features) with Swin-Tiny (global context) through a Lesion-Guided Attention Gate (LGAG), a single-stream spatial attention module supervised with pixel-level IDRiD lesion masks during a dedicated warm-start stage before grade-level fine-tuning.
 ---
 
 ## Results
