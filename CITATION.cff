@@ -1,0 +1,20 @@
+cff-version: 1.2.0
+message: "If you use this code or build on this work, please cite the following paper."
+title: "LGA-Net: A Lesion-Guided Attention Network Combining EfficientNet-B4 and Swin Transformer for Diabetic Retinopathy Grading"
+authors:
+  - family-names: "Arshad"
+    given-names: "Sobia"
+    affiliation: "Department of Anti-Aging Health Care, Graduate School, Inje University"
+  - family-names: "Kim"
+    given-names: "Yongcheol"
+    affiliation: "Department of Anti-Aging Health Care, Graduate School, Inje University"
+date-released: 2026-06-24
+url: "https://github.com/Sobia7590/LGA-Net"
+repository-code: "https://github.com/Sobia7590/LGA-Net"
+license: MIT
+keywords:
+  - diabetic retinopathy
+  - deep learning
+  - attention mechanism
+  - EfficientNet
+  - Swin Transformer
