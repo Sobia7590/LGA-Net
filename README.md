@@ -1,12 +1,15 @@
-# LGA-Net: Lesion-Guided Attention Network for Diabetic Retinopathy Grading
+# LGA-Net: Cross-Dataset Mask-Supervised Attention for Diabetic Retinopathy Grading
 
 [![Python](https://img.shields.io/badge/Python-3.9%2B-blue)](https://www.python.org/)
 [![PyTorch](https://img.shields.io/badge/PyTorch-2.0%2B-orange)](https://pytorch.org/)
 [![Dataset](https://img.shields.io/badge/Dataset-APTOS%202019-green)](https://www.kaggle.com/c/aptos2019-blindness-detection)
 [![QWK](https://img.shields.io/badge/QWK-0.9049%C2%B10.0069-brightgreen)](#results-on-aptos-2019)
+[![Accepted-MICAD 2026](https://img.shields.io/badge/Accepted-MICAD%202026-blueviolet)](#overview)
 [![License](https://img.shields.io/badge/License-MIT-yellow)](LICENSE)
 
 > Official implementation of **LGA-Net**, a dual-branch CNN-Transformer architecture with a Lesion-Guided Attention Gate (LGAG), cross-dataset mask-supervised via IDRiD before fine-tuning on APTOS 2019.
+>
+> **Accepted at the 7th International Conference on Medical Imaging and Computer-Aided Diagnosis (MICAD 2026)**, 22–24 October 2026, Edinburgh, UK — Paper ID 761.
 
 ---
 
@@ -19,31 +22,30 @@ LGA-Net fuses:
 
 through a **Lesion-Guided Attention Gate**, warm-started with pixel-level lesion supervision from IDRiD, then fine-tuned end-to-end on APTOS 2019.
 
-**Headline result:** QWK = **0.9049 ± 0.0069** under 5-fold stratified cross-validation on APTOS 2019 (out-of-fold pooled predictions), statistically indistinguishable from a Swin-Tiny-only backbone (paired Wilcoxon, p = 0.3125) and significantly ahead of ResNet-50, EfficientNet-B4, and MobileNetV2 (all p < 0.05).
+**Headline result:** QWK = **0.9049 ± 0.0069** under 5-fold stratified cross-validation on APTOS 2019 (out-of-fold pooled predictions), statistically indistinguishable from a Swin-Tiny-only backbone (paired Wilcoxon, p = 0.3125) and significantly ahead of ResNet-50, EfficientNet-B4, and MobileNetV2 (all bootstrap 95% CIs exclude zero).
 
-A six-configuration, three-seed ablation shows no single design choice, including mask supervision itself, drives that QWK on its own — every ablated configuration's 95% CI overlaps the full model's. The paper's contribution is therefore framed around what the ablation *does* support: quantitative interpretability evidence (attention-lesion overlap, deletion/insertion testing) rather than a raw-accuracy claim. See the paper for the full statistical treatment.
+A **seven-configuration, three-seed ablation** shows no single design choice, including mask supervision itself, drives that QWK on its own — every ablated configuration's 95% CI overlaps the full model's. The paper's contribution is therefore framed around what the ablation *does* support: quantitative interpretability evidence (attention-lesion overlap, deletion/insertion testing) rather than a raw-accuracy claim. See the paper for the full statistical treatment.
 
 ---
 
 ## Results on APTOS 2019
 
-Single-run comparison across all five architectures, identical data pipeline and training protocol:
+Pooled out-of-fold predictions, 5-fold cross-validation: **QWK 0.9049 ± 0.0069, Accuracy 0.8263, AUC 0.8908**.
 
-| Model | Params (M) | QWK | Accuracy | AUC (OvR) |
-|---|---|---|---|---|
-| **LGA-Net (Ours)** | 48.4 | **0.9008** | **0.8349** | 0.8738 |
-| Swin-Tiny | 27.5 | 0.8944 | 0.8213 | 0.8411 |
-| ResNet-50 | 23.5 | 0.8773 | 0.7926 | **0.9049** |
-| EfficientNet-B4 | 17.6 | 0.8698 | 0.7858 | 0.8779 |
-| MobileNetV2 | 2.2 | 0.8395 | 0.7681 | 0.8789 |
+LGA-Net vs. each baseline, matched 5-fold cross-validation, paired significance tests:
 
-Primary evaluation, 5-fold stratified cross-validation (out-of-fold pooled): **QWK 0.9049 ± 0.0069, Accuracy 0.8263 ± 0.0120, AUC 0.8908 ± 0.0254** (n = 5 folds).
+| Comparison | Mean diff. (QWK) | p (Wilcoxon) | Bootstrap 95% CI |
+|---|---|---|---|
+| vs. Swin-Tiny | −0.0064 | 0.3125 | [−0.0140, +0.0004] |
+| vs. ResNet-50 | +0.0088 | 0.0625 | [+0.0010, +0.0167] |
+| vs. EfficientNet-B4 | +0.0192 | 0.0625 | [+0.0098, +0.0290] |
+| vs. MobileNetV2 | +0.0353 | 0.0625 | [+0.0250, +0.0457] |
 
-Parameter counts reflect each architecture's actual 5-class classification head used in this study (measured directly via `sum(p.numel() for p in model.parameters())`), not the standard 1000-class ImageNet head commonly cited elsewhere.
+LGA-Net and Swin-Tiny show no statistically significant difference (a null result, not evidence of equivalence), while LGA-Net is significantly ahead of all three CNN baselines under this matched protocol.
 
 ### Ablation Study
 
-Three seeds per configuration, bootstrap 95% CI (pooled per-sample predictions, 2000 resamples). Full model's own CI: [0.8955, 0.9142].
+Seven configurations, three seeds each, bootstrap 95% CI (pooled per-sample predictions, 2000 resamples). Full model's own CI: [0.8955, 0.9142].
 
 | Configuration | QWK (mean ± SD) | 95% CI | Overlaps full model? |
 |---|---|---|---|
@@ -60,12 +62,24 @@ No ablated configuration is statistically distinguishable from the full model on
 
 ---
 
+## Interpretability
+
+Because no single architectural choice is shown to drive raw QWK, LGA-Net's evidence for the LGAG rests on what its attention actually does.
+
+- At its native 12×12 resolution, LGAG attention overlaps IDRiD lesion annotations with **Dice 0.6227 (IoU 0.4641)** on the internal 11-image validation split, and **Dice 0.6286 (IoU 0.4708)** on IDRiD's official, fully held-out 27-image Testing Set.
+- Attention overlaps a trivial circular field-of-view mask more strongly than it overlaps lesion masks (Dice 0.7612 / 0.7672), so it behaves more like a general disease-vs-no-disease signal than a precise lesion localizer.
+- Pooled across patches, attention magnitude correlates with local lesion density at **r = 0.199** (internal, n = 1,584 patches / 11 images) and **r = 0.221** (held-out test set, n = 3,888 patches / 27 images, p = 3.64 × 10⁻⁴⁴); cluster bootstraps (5,000 resamples) give 95% CIs excluding zero in both samples.
+- Treating each image as one observation instead, the image-level correlation is **not significant** in either sample — the association only replicates at the patch level.
+- A deletion/insertion test confirms a stable spatial prior rather than a per-image explanation.
+
+---
+
 ## Installation
 
 ```bash
 git clone https://github.com/Sobia7590/LGA-Net.git
 cd LGA-Net
-pip install -r requirements.txt
+pip install -r Requirements.txt
 ```
 
 ---
@@ -108,9 +122,9 @@ Update the `BASE_DIR` path in the notebook/scripts to match your machine.
 
 ### Full LGA-Net training (Stage 1 + Stage 2, 5-fold CV)
 
-Open and run `LGA_NET_V3.ipynb` cell by cell.
+Open and run `LGA_NET.ipynb` cell by cell.
 
-### Ablation configurations (6 configs, 3 seeds each)
+### Ablation configurations (7 configs, 3 seeds each)
 
 ```bash
 python dual_branch_no_lgag_multiseed.py   # No LGAG (dual-branch fusion only)
@@ -124,7 +138,7 @@ Other ablation configurations (no mask supervision, no warm-start, Swin-only, λ
 python dual_branch_no_lgag_bootstrap_ci.py
 ```
 
-Reconstructs per-sample predictions from saved checkpoints and computes the pooled-OOF bootstrap 95% CI used throughout Table 7, matching the methodology used for every other ablation row.
+Reconstructs per-sample predictions from saved checkpoints and computes the pooled-OOF bootstrap 95% CI used throughout the ablation table, matching the methodology used for every other row.
 
 ---
 
@@ -150,8 +164,8 @@ Input (380×380)
 
 ### Training Protocol
 
-- **Stage 1:** Frozen backbones, LGAG warm-started on IDRiD lesion masks (BCE supervision), attention-loss-based checkpoint selection (QWK is unreliable on 11 validation images).
-- **Stage 2:** Full fine-tuning on APTOS 2019, 5-fold stratified CV, discriminative learning rates (5×10⁻⁶ backbone, 5×10⁻⁵ LGAG/classifier), checkpoint selection on validation QWK.
+- **Stage 1:** Frozen backbones, LGAG warm-started on IDRiD lesion masks (BCE supervision), attention-loss-based checkpoint selection (QWK is unreliable on 11 validation images). Best validation attention loss: 0.3674 at epoch 16.
+- **Stage 2:** Full fine-tuning on APTOS 2019, 5-fold stratified CV, discriminative learning rates (5×10⁻⁶ backbone, 5×10⁻⁵ LGAG/classifier), class-weighted label-smoothed cross-entropy, AdamW, cosine schedule, checkpoint selection on validation QWK. Canonical run: validation QWK 0.9008 at epoch 23.
 
 ---
 
@@ -172,7 +186,7 @@ Zero-shot transfer, unified 5-way test-time augmentation protocol (identity, hor
 | MobileNetV2 | APTOS (internal) | 0.8403 | 0.7858 | 0.8877 |
 | MobileNetV2 | Messidor-2 (external) | 0.3899 | 0.5981 | 0.7164 |
 
-Every model's QWK drops substantially from APTOS to Messidor-2. LGA-Net beats all three CNN baselines externally by a clear margin, but Swin-Tiny is numerically ahead of LGA-Net on Messidor-2 (0.5771 vs. 0.5423); LGA-Net's mask-guided attention does not close the domain-shift gap. These external comparisons are descriptive, not significance-tested (see the paper's Discussion for the caveat and a plausible explanation).
+Every model's QWK drops substantially from APTOS to Messidor-2 (a real domain-shift gap, QWK falling to ~0.54 for LGA-Net, reported in full). LGA-Net beats all three CNN baselines externally by a clear margin, but Swin-Tiny is numerically ahead of LGA-Net on Messidor-2 (0.5771 vs. 0.5423); LGA-Net's mask-guided attention does not close the domain-shift gap. These external comparisons are descriptive, not significance-tested (see the paper's Discussion for the caveat and a plausible explanation).
 
 ---
 
@@ -184,7 +198,7 @@ Model weights are too large for GitHub (each checkpoint is ~100–195MB, above G
 |---|---|---|
 | Stage 1 best (IDRiD warm-start) | [Add link] | ~120MB |
 | Stage 2 best (APTOS, canonical run) | [Add link] | ~195MB |
-| Ablation checkpoints (6 configs × 3 seeds × 2 stages) | [Add link] | ~195MB each |
+| Ablation checkpoints (7 configs × 3 seeds × 2 stages) | [Add link] | ~195MB each |
 
 ---
 
@@ -193,11 +207,15 @@ Model weights are too large for GitHub (each checkpoint is ~100–195MB, above G
 If you use this code in your research, please cite:
 
 ```bibtex
-@article{lganet2026,
-  title   = {LGA-Net: Cross-Dataset Mask-Supervised Attention over Fused
-             CNN--Transformer Features for Diabetic Retinopathy Grading},
-  author  = {Arshad, Sobia},
- }
+@inproceedings{arshad2026lganet,
+  title     = {LGA-Net: Cross-Dataset Mask-Supervised Attention for
+               Diabetic Retinopathy Grading},
+  author    = {Arshad, Sobia and Kim, Yongcheol},
+  booktitle = {Proceedings of the 7th International Conference on Medical
+               Imaging and Computer-Aided Diagnosis (MICAD 2026)},
+  year      = {2026},
+  address   = {Edinburgh, UK},
+  note      = {Paper ID 761}
 }
 ```
 
@@ -208,6 +226,8 @@ If you use this code in your research, please cite:
 This project is licensed under the MIT License — see [LICENSE](LICENSE) for details.
 
 ## Acknowledgements
+
+This research was supported by the Korean Government Scholarship (GKS) Program and Inje University, under the supervision of Prof. Yongcheol Kim.
 
 - [APTOS 2019 Kaggle Competition](https://www.kaggle.com/c/aptos2019-blindness-detection)
 - [IDRiD Challenge](https://idrid.grand-challenge.org/)
